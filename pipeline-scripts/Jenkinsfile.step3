@@ -13,7 +13,7 @@ node {
     git url: 'https://github.com/jfrog-aparicio/p9-jfrog-webinar.git', branch: 'master'
     def jobName = env.JOB_NAME
     def SERVER_URL = "https://webinar.jfrog.team/artifactory"
-    def REPO = "docker-virtual"
+    def REPO = "docker"
     def PROMOTE_REPO = "docker-prod-local"
     def SOURCE_REPO = "docker-stage-local"
     def rtServer = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS

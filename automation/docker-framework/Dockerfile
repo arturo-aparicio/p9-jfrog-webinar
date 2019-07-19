@@ -1,4 +1,6 @@
-FROM jfrog.local:5000/ubuntu:latest
+ARG REGISTRY=webinar.jfrog.team
+
+FROM ${REGISTRY}/ubuntu:latest
 
 MAINTAINER Stanley Fong stanleyf@jfrog.com
 
