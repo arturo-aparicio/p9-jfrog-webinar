@@ -178,15 +178,23 @@ def reTagLatest (targetRepo, promote_repo, source_repo, server_url) {
 def testFramework (tag) {
     def result = true
     docker.image(tag).withRun('-p 8181:8181') {c ->
-        sleep 10
-        def stdout = sh(script: 'curl "http://localhost:8181/swampup/"', returnStdout: true)
-        if (stdout.contains("Welcome Docker Lifecycle Training")) {
-            println "*** Passed Test: " + stdout
-        } else {
-            println "*** Failed Test: " + stdout
-            result = false
+        result = false
+        6.times {
+            println "Sleeping 10 seconds to let the app come up."
+            sleep 10
+            def stdout = sh(script: 'curl "http://localhost:8181/swampup/"', returnStdout: true)
+            if (stdout.contains("Welcome Docker Lifecycle Training")) {
+                println "*** Passed Test: " + stdout
+                result = true
+                break
+            } else {
+                println "*** App did not respond as expected: " + stdout
+            }
         }
+        if (!result)
+            println "*** Failed Test: " + stdout
     }
+
     sh "docker rmi ${tag}"
     return result
 }
