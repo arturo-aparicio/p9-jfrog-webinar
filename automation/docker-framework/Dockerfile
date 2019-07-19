@@ -1,6 +1,6 @@
 ARG REGISTRY=webinar.jfrog.team
 
-FROM ${REGISTRY}/ubuntu:latest
+FROM ${REGISTRY}/tutum/curl
 
 MAINTAINER Stanley Fong stanleyf@jfrog.com
 
