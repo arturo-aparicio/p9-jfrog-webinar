@@ -1,0 +1,77 @@
+#!/usr/bin/env groovy
+import groovy.json.JsonSlurper
+
+node {
+
+    def DEPLOY_REPO = "gradle-release"
+    def CLEAN_REPO = "YES"
+    def WATCHNAME = env.JOB_NAME
+    def jobName = env.JOB_NAME
+    def SERVER_URL = "https://webinar.jfrog.team/artifactory"
+    def XRAYURL = "http://webinar-xray.jfrog.team:8000"
+    def server = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
+    def rtGradle = Artifactory.newGradleBuild()
+
+    //Clone example code from GitHub repository
+    stage 'Build'
+        git url: 'https://github.com/jfrog-aparicio/p9-jfrog-webinar.git', branch: 'master'
+
+    stage 'Artifactory configuration'
+        currentBuild.displayName = BUILD_NUMBER
+        createXrayWatch (WATCHNAME, XRAYURL)
+        rtGradle.tool = GRADLE_TOOL // Tool name from Jenkins configuration
+        rtGradle.deployer repo:DEPLOY_REPO, server: server
+        rtGradle.resolver repo:'libs-release', server: server
+        rtGradle.deployer.addProperty("unit-test", "pass").addProperty("qa-team", "platform", "ui")
+        def buildInfo = Artifactory.newBuildInfo()
+        buildInfo.env.capture = true
+
+    //Run gradle build
+    stage 'Exec Gradle'
+        if(CLEAN_REPO == "YES") {
+            sh 'rm -rf ~/.gradle/caches'
+        }
+        rtGradle.run rootDir: "gradle-examples/4/gradle-example-ci-server/", buildFile: 'build.gradle', tasks: 'clean artifactoryPublish', buildInfo: buildInfo
+
+    //Publish artifacts to Artifactory along with build information and scan build artifacts in Xray
+    stage 'Publish Build Information & Scan Artifacts'
+        server.publishBuildInfo buildInfo
+        if (XRAY_SCAN == "YES") {
+            def scanConfig = [
+                    'buildName'      : env.JOB_NAME,
+                    'buildNumber'    : env.BUILD_NUMBER,
+                    'failBuild'      : FAIL_BUILD == 'true'
+                ]
+            def scanResult = server.xrayScan scanConfig
+            echo scanResult as String
+         }
+}
+
+// common code to be included in library
+def createXrayWatch (watch, XRAYURL) {
+    def watchConfig = """ {
+        "active"      : true,
+        "name"        : "${watch}",
+        "target_type" : "build",
+        "art_id"      : "artifactory-ha",
+        "target_name" : "${watch}"
+    }"""
+
+    def createWatch = ["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", "${watchConfig}", "-u", "admin:password", "${XRAYURL}/api/v1/watches"]
+
+    def curlString = "curl -uadmin:password " + "-X GET " + XRAYURL
+    def getWatch = curlString +  "/api/v1/watches/${watch}"
+    try {
+        def getWatchResponse = getWatch.execute().text
+        def jsonSlurper = new JsonSlurper()
+        def watchexist = jsonSlurper.parseText("${getWatchResponse}")
+        if (watchexist.error) {
+            def createWatchResponse = createWatch.execute().text
+        }
+    } catch (Exception e) {
+              println "XRay cannot retrieve or create watch information ${e.message}"
+              ignoreAlertsCheck = true
+    }
+}
+
+
