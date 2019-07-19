@@ -137,16 +137,24 @@ node {
 }
 
 def testApp (tag) {
-    docker.image(tag).withRun('-p 9191:8181') {c ->
-        sleep 10
-        def stdout = sh(script: 'curl "http://localhost:9191/swampup/"', returnStdout: true)
-        if (stdout.contains("Welcome Docker Lifecycle Training")) {
-            println "*** Passed Test: " + stdout
-            return true
-        } else {
-            println "*** Failed Test: " + stdout
-            return false
+    docker.image(tag).withRun('--name test-qa -p 8181:8181') {c ->
+        def result = false
+        def stdout = ""
+        println "Test if app responds as expected."
+        for (int i = 0; i < 6; ++i) {
+            sleep 10
+            stdout = sh(script: 'docker exec test-qa curl "http://localhost:8181/swampup/"', returnStdout: true)
+            if (stdout.contains("Welcome Docker Lifecycle Training")) {
+                println "*** Passed Test: " + stdout
+                result = true
+                break
+            } else {
+                println "*** App did not respond as expected: " + stdout
+            }
         }
+        if (!result)
+            println "*** Failed Test: " + stdout
+        return result
     }
 }
 //Tag docker image
