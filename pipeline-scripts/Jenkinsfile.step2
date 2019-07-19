@@ -4,18 +4,18 @@ import hudson.FilePath
 
 node {
     //Clone example project from GitHub repository
-    git url: 'https://github.com/jfrogtraining/project-examples', branch: 'eplus-orbitera'
+    git url: 'https://github.com/jfrog-aparicio/p9-jfrog-webinar.git', branch: 'master'
     def WATCHNAME = env.JOB_NAME
     def jobName = env.JOB_NAME
-    def SERVER_URL = "http://jfrog.local/artifactory"
-    def XRAYURL = "http://jfrog.local:8000"
+    def SERVER_URL = "https://webinar.jfrog.team/artifactory"
+    def XRAYURL = "http://webinar-xray.jfrog.team"
     def REPO = "docker-virtual"
     def PROMOTE_REPO = "docker-prod-local"
     def SOURCE_REPO = "docker-stage-local"
     def rtServer = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
     def buildInfo = Artifactory.newBuildInfo()
     def tagName
-    def artdocker_registry = "jfrog.local:5000"
+    def artdocker_registry = "webinar.jfrog.team"
     buildInfo.env.capture = true
 
     //Fetch all depensencies from Artifactory
