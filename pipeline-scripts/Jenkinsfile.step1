@@ -8,7 +8,6 @@ node {
     def WATCHNAME = 'watch-all'
     def jobName = env.JOB_NAME
     def SERVER_URL = "https://webinar.jfrog.team/artifactory"
-    def XRAYURL = "http://webinar-xray.jfrog.team"
     def server = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
     def rtGradle = Artifactory.newGradleBuild()
 

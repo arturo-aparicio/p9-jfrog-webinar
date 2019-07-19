@@ -5,10 +5,8 @@ import hudson.FilePath
 node {
     //Clone example project from GitHub repository
     git url: 'https://github.com/jfrog-aparicio/p9-jfrog-webinar.git', branch: 'master'
-    def WATCHNAME = env.JOB_NAME
     def jobName = env.JOB_NAME
     def SERVER_URL = "https://webinar.jfrog.team/artifactory"
-    def XRAYURL = "http://webinar-xray.jfrog.team"
     def REPO = "docker-virtual"
     def PROMOTE_REPO = "docker-prod-local"
     def SOURCE_REPO = "docker-stage-local"
@@ -55,7 +53,6 @@ node {
     }
     //Build docker image named "docker-framework" with Java 8 and Tomcat
     stage('Build') {
-        createXrayWatch (WATCHNAME, XRAYURL)
         try {
           dir ('automation/docker-framework') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
@@ -117,7 +114,7 @@ node {
             ]
             def xrayResults = rtServer.xrayScan xrayConfig
             echo xrayResults as String
-            sleep 60
+            sleep 5
         } else {
             println "No Xray scan performed. To enable set XRAY_SCAN = YES"
         }
@@ -201,33 +198,6 @@ def updateProperty (property, artserverUrl, sourceRepo) {
             println "Curl String is " + updatePropStr
             sh updatePropStr
      }
-}
-
-
-def createXrayWatch (watch, XRAYURL) {
-    def watchConfig = """ {
-        "active"      : true,
-        "name"        : "${watch}",
-        "target_type" : "build",
-        "art_id"      : "artCi1",
-        "target_name" : "${watch}"
-    }"""
-
-    def createWatch = ["curl", "-X", "POST", "-H", "Content-Type: application/json", "-d", "${watchConfig}", "-u", "admin:password", "${XRAYURL}/api/v1/watches"]
-
-    def curlString = "curl -uadmin:password " + "-X GET " + XRAYURL
-    def getWatch = curlString +  "/api/v1/watches/${watch}"
-    try {
-        def getWatchResponse = getWatch.execute().text
-        def jsonSlurper = new JsonSlurper()
-        def watchexist = jsonSlurper.parseText("${getWatchResponse}")
-        if (watchexist.error) {
-            def createWatchResponse = createWatch.execute().text
-        }
-    } catch (Exception e) {
-              println "XRay cannot retrieve or create watch information ${e.message}"
-              ignoreAlertsCheck = true
-    }
 }
 
 def promoteBuild (source_repo, promote_repo, SERVER_URL) {

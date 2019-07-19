@@ -10,19 +10,16 @@ import groovy.json.JsonSlurper
 
 node {
     //Clone example project from GitHub repository
-    git url: 'https://github.com/jfrogtraining/project-examples', branch: 'eplus-orbitera'
-    def WATCHNAME = env.JOB_NAME
+    git url: 'https://github.com/jfrog-aparicio/p9-jfrog-webinar.git', branch: 'master'
     def jobName = env.JOB_NAME
-
-    def SERVER_URL = "http://jfrog.local/artifactory"
-    def XRAYURL = "http://jfrog.local:8083"
+    def SERVER_URL = "https://webinar.jfrog.team/artifactory"
     def REPO = "docker-virtual"
     def PROMOTE_REPO = "docker-prod-local"
     def SOURCE_REPO = "docker-stage-local"
     def rtServer = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
     def buildInfo = Artifactory.newBuildInfo()
     def tagName
-    def artdocker_registry = "jfrog.local:5000"
+    def artdocker_registry = "webinar.jfrog.team"
     def tagDockerApp
     def rtDocker = Artifactory.docker server: rtServer
     buildInfo.env.capture = true

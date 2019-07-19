@@ -2,15 +2,13 @@
 import groovy.json.JsonSlurper
 
 node {
-    def WATCHNAME = env.JOB_NAME
     def jobName = env.JOB_NAME
-
-    def server_url = "http://jfrog.local/artifactory"
+    def server_url = "https://webinar.jfrog.team/artifactory"
     def image_tag = getLatestDockerImage(server_url)
     def repo = "helm-virtual"
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
-        git url: 'https://github.com/jfrogtraining/kubernetes_example.git', branch: 'master'
+        git url: 'https://github.com/jfrog-aparicio/p9-jfrog-webinar.git', branch: 'master'
     }
 
     stage('Build Chart & push it to Artifactory repo') {
