@@ -91,7 +91,7 @@ node {
             rtServer.download(gradleWarDownload)
             updateDockerFile()
             def tagDockerFramework = "${artdocker_registry}/docker-framework-test:${env.BUILD_NUMBER}"
-            docker.build(tagDockerFramework)
+            docker.build(tagDockerFramework, "--build-arg REGISTRY=${artdocker_registry} .")
             if (testFramework(tagDockerFramework)) {
                 println "Setting property and promotion"
                 updateProperty ("functional-test=pass", SERVER_URL, SOURCE_REPO )
