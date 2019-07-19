@@ -177,12 +177,12 @@ def reTagLatest (targetRepo, promote_repo, source_repo, server_url) {
 //test docker image by runnning container
 def testFramework (tag) {
     def result = true
-    docker.image(tag).withRun('-p 8181:8181') {c ->
+    docker.image(tag).withRun('--name test-qa -p 8181:8181') {c ->
         result = false
         println "Test if app responds as expected."
         6.times {
             sleep 10
-            def stdout = sh(script: 'docker exec -it curl "http://localhost:8181/swampup/"', returnStdout: true)
+            def stdout = sh(script: 'docker exec -it test-qa curl "http://localhost:8181/swampup/"', returnStdout: true)
             if (stdout.contains("Welcome Docker Lifecycle Training")) {
                 println "*** Passed Test: " + stdout
                 result = true
