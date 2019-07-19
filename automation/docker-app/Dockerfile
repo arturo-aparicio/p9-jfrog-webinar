@@ -1,4 +1,6 @@
-FROM jfrog.local:5000/docker-framework:latest
+ARG REGISTRY=webinar.jfrog.team
+
+FROM ${REGISTRY}/docker-framework:latest
 
 MAINTAINER Stanley Fong stanleyf@jfrog.com
 
