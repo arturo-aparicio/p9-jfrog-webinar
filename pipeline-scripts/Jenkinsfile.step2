@@ -179,11 +179,10 @@ def testFramework (tag) {
     def result = false
     def stdout = ""
     docker.image(tag).withRun('--name test-qa -p 8181:8181') {c ->
-        result = false
         println "Test if app responds as expected."
         for (int i = 0; i < 6; ++i) {
             sleep 10
-            sh(script: 'docker exec test-qa curl "http://localhost:8181/swampup/"', returnStdout: true)
+            stdout = sh(script: 'docker exec test-qa curl "http://localhost:8181/swampup/"', returnStdout: true)
             if (stdout.contains("Welcome Docker Lifecycle Training")) {
                 println "*** Passed Test: " + stdout
                 result = true
