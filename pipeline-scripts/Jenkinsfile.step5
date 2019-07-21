@@ -11,14 +11,14 @@ node {
     stage('Configure helm & add Artifactory repo') {
         /* Configure helm client to point to k8s cluster */
          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-           sh "sudo helm version"
-           sh "sudo helm repo add helm ${SERVER_URL}/helm/ --username $USERNAME --password $PASSWORD"
-           sh "sudo helm repo update"
+           sh "helm version"
+           sh "helm repo add helm ${SERVER_URL}/helm/ --username $USERNAME --password $PASSWORD"
+           sh "helm repo update"
          }
     }
 
     stage('Deploy chart pulling from Artifactory') {
         /* Finally, we'll deploy the image to k8s using helm chart. this will pickup the lastest chart */
-        sh "sudo helm upgrade my-docker-app --install helm/docker-app-chart --set service.type=NodePort --set service.nodePort=30001 --set image.repository=${artdocker_registry}/docker-app"
+        sh "helm upgrade my-docker-app --install helm/docker-app-chart --set service.type=NodePort --set service.nodePort=30001 --set image.repository=${artdocker_registry}/docker-app"
     }
 }
