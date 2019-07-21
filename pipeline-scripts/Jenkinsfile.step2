@@ -133,7 +133,7 @@ node {
               'status'             : 'Released',
               'includeDependencies': false,
               'copy'               : true,
-              'failFast'           : true
+              'failFast': false
             ]
             promoteBuild (SOURCE_REPO, PROMOTE_REPO, SERVER_URL)
             // rtServer.promote promotionConfig - occassionally will hang on dry run

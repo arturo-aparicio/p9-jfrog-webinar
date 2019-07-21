@@ -183,7 +183,7 @@ def promoteBuild (source_repo, promote_repo, SERVER_URL) {
         "targetRepo"  : "${promote_repo}",
         "copy"        : true,
         "dependencies" : false,
-        "failFast": true
+        "failFast": false
     }"""
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
