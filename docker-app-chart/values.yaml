@@ -18,8 +18,8 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   type: LoadBalancer
-  port: 8181
-  targetPort: 80
+  port: 80
+  targetPort: 8181
   nodePort: ""
 
 resources: {}
