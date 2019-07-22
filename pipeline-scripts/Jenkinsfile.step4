@@ -17,7 +17,7 @@ node {
               sh "jfrog rt c beta --user ${USERNAME} --password ${PASSWORD} --url ${server_url} < /dev/null"
          }
 
-         updateChartFile (image_tag)
+         updateChartFile (BUILD_NUMBER)
          sh "sed -i 's/latest/${image_tag}/g' docker-app-chart/values.yaml"
          sh "helm init --client-only"
          sh "helm package ./docker-app-chart/ --save=false"
@@ -28,8 +28,8 @@ node {
     }
 }
 
-def updateChartFile (tag) {
-    sh "sed -i 's/0.1.1/${tag}/' ./docker-app-chart/Chart.yaml"
+def updateChartFile (buildNum) {
+    sh "sed -i 's/0.1.1/${buildNum}/' ./docker-app-chart/Chart.yaml"
 }
 
 def getLatestDockerImage (server_url) {
