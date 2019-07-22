@@ -1,0 +1,24 @@
+#!/usr/bin/env groovy
+import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder
+
+node {
+
+    def SERVER_URL = "https://webinar.jfrog.team/artifactory"
+    def artdocker_registry = "webinar.jfrog.team"
+    def latestVersionName
+
+    stage('Configure helm & add Artifactory repo') {
+        /* Configure helm client to point to k8s cluster */
+         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+           sh "helm version"
+           sh "helm repo add helm ${SERVER_URL}/helm/ --username $USERNAME --password $PASSWORD"
+           sh "helm repo update"
+         }
+    }
+
+    stage('Rollback the changes to the deployed webapp') {
+        /* Ability to rollback */
+        sh "helm rollback my-docker-app 0"
+    }
+}
