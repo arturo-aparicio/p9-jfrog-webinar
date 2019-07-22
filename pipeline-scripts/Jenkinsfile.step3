@@ -144,7 +144,7 @@ def testApp (tag) {
         for (int i = 0; i < 6; ++i) {
             sleep 10
             stdout = sh(script: 'docker exec test-qa curl "http://localhost:8181/swampup/"', returnStdout: true)
-            if (stdout.contains("Welcome Docker Lifecycle Training")) {
+            if (stdout.contains("Welcome")) {
                 println "*** Passed Test: " + stdout
                 result = true
                 break
