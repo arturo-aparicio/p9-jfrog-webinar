@@ -29,7 +29,7 @@ node {
 }
 
 def updateChartFile (tag) {
-    sh 'sed -i "s/0.1.1/${tag}/" ./docker-app-chart/Chart.yaml'
+    sh "sed -i 's/0.1.1/${tag}/' ./docker-app-chart/Chart.yaml"
 }
 
 def getLatestDockerImage (server_url) {
