@@ -19,6 +19,6 @@ node {
 
     stage('Deploy chart pulling from Artifactory') {
         /* Finally, we'll deploy the image to k8s using helm chart. this will pickup the lastest chart */
-        sh "helm upgrade my-docker-app --install helm/docker-app-chart --recreate-pods --namespace jfrog --set image.repository=${artdocker_registry}/docker-app"
+        sh "helm upgrade my-docker-app --install helm/docker-app-chart --namespace jfrog --set image.repository=${artdocker_registry}/docker-app"
     }
 }
