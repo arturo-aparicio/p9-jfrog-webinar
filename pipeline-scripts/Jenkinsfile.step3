@@ -143,7 +143,7 @@ def testApp (tag) {
         println "Test if app responds as expected."
         for (int i = 0; i < 6; ++i) {
             sleep 10
-            stdout = sh(script: 'docker exec test-qa curl "http://localhost:8181/swampup/"', returnStdout: true)
+            stdout = sh(script: 'docker exec test-qa curl "http://localhost:8181/"', returnStdout: true)
             if (stdout.contains("Welcome")) {
                 println "*** Passed Test: " + stdout
                 result = true
