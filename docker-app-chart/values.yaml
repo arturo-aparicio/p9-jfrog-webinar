@@ -11,12 +11,6 @@ image:
   secretName: regsecret
   pullPolicy: Always
 
-#Uncomment if you want to generate docker credentials using helm
-#imageCredentials:
-#  registry: docker.artifactory
-#  username: admin
-#  password: password
-
 service:
   annotations: {}
   clusterIP: ""
@@ -25,6 +19,7 @@ service:
   loadBalancerSourceRanges: []
   type: LoadBalancer
   port: 8181
+  targetPort: 80
   nodePort: ""
 
 resources: {}
