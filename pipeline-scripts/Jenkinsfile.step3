@@ -27,7 +27,7 @@ node {
     //Fetch all depedencies from Artifactory
     stage ('Dependencies') {
         currentBuild.displayName = BUILD_NUMBER
-        dir ('automation/docker-app') {
+        dir ('docker-app') {
             try {
                 println "Gather Released Docker Framework and Gradle War file"
                 def gradleWarDownload = """{
@@ -49,7 +49,7 @@ node {
 
     //Build docker image named docker-app
     stage ('Build & Deploy') {
-        dir ('automation/docker-app') {
+        dir ('docker-app') {
             try {
                 retry(3) {
                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
@@ -77,7 +77,7 @@ node {
 
     //Test docker image
      stage ('Test') {
-        dir('automation/docker-app/app-test') {
+        dir('docker-app/app-test') {
 
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh 'docker rmi '+tagDockerApp+' || true'
@@ -115,7 +115,7 @@ node {
 
     //Promote docker image from staging local repo to production repo in Artifactory
      stage ('Promote') {
-        dir('automation/docker-app/app-test') {
+        dir('docker-app/app-test') {
             def promotionConfig = [
               'buildName'          : env.JOB_NAME,
               'buildNumber'        : env.BUILD_NUMBER,

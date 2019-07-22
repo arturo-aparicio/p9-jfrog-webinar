@@ -19,7 +19,7 @@ node {
     //Fetch all depensencies from Artifactory
     stage('Dependencies') {
         currentBuild.displayName = BUILD_NUMBER
-        dir('automation/docker-framework') {
+        dir('docker-framework') {
             try {
                 println "Gather Java and Tomcat"
                 def downloadSpec = """{
@@ -54,7 +54,7 @@ node {
     //Build docker image named "docker-framework" with Java 8 and Tomcat
     stage('Build') {
         try {
-          dir ('automation/docker-framework') {
+          dir ('docker-framework') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     def rtDocker = Artifactory.docker server: rtServer
                     tagName = "${artdocker_registry}/docker-framework:${env.BUILD_NUMBER}"
@@ -75,7 +75,7 @@ node {
     }
     //Test docker image
     stage('Test') {
-        dir('automation/docker-framework/framework-test') {
+        dir('docker-framework/framework-test') {
 
             def gradleWarDownload = """{
             "files": [
@@ -123,7 +123,7 @@ node {
     //Promote image from local staging repositoy to production repository
     stage ('Promote') {
 
-        dir ('automation/docker-framework') {
+        dir ('docker-framework') {
             def promotionConfig = [
               'buildName'          : env.JOB_NAME,
               'buildNumber'        : env.BUILD_NUMBER,
