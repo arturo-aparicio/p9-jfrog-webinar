@@ -21,7 +21,7 @@ node {
          sh "sed -i 's/latest/${image_tag}/g' docker-app-chart/values.yaml"
          sh "helm init --client-only"
          sh "helm package ./docker-app-chart/ --save=false"
-         sh "jfrog rt u '*.${env.BUILD_NUMBER}.tgz' ${repo} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} -server-id beta --props='release-bundle=true'"
+         sh "jfrog rt u '*-${env.BUILD_NUMBER}.tgz' ${repo} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} -server-id beta --props='release-bundle=true'"
          sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER} "
          sh "jfrog rt dl docker-prod-local/docker-app/${image_tag}/manifest.json --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} -server-id beta"
          sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER} -server-id beta"
