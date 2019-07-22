@@ -1,6 +1,0 @@
-items.find (
-    {
-      "repo": {"$match":"*-prod-local"}
-      }
-)
-.include("repo", "name", "path", "artifact.module.build")
