@@ -7,7 +7,7 @@ node {
     def CLEAN_REPO = "YES"
     def WATCHNAME = 'watch-all'
     def jobName = env.JOB_NAME
-    def SERVER_URL = "https://webinar.jfrog.team/artifactory"
+    def SERVER_URL = "https://p9demo-artifactory.jfrog.team/artifactory"
     def server = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
     def rtGradle = Artifactory.newGradleBuild()
 

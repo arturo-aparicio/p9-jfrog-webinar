@@ -4,8 +4,8 @@ import groovy.json.JsonBuilder
 
 node {
 
-    def SERVER_URL = "https://webinar.jfrog.team/artifactory"
-    def artdocker_registry = "webinar.jfrog.team"
+    def SERVER_URL = "https://p9demo-artifactory.jfrog.team/artifactory"
+    def artdocker_registry = "p9demo-artifactory.jfrog.team"
     def latestVersionName
 
     stage('Configure helm & add Artifactory repo') {

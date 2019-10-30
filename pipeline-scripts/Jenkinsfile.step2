@@ -6,14 +6,14 @@ node {
     //Clone example project from GitHub repository
     git url: 'https://github.com/jfrog-aparicio/p9-jfrog-webinar.git', branch: 'master'
     def jobName = env.JOB_NAME
-    def SERVER_URL = "https://webinar.jfrog.team/artifactory"
+    def SERVER_URL = "https://p9demo-artifactory.jfrog.team/artifactory"
     def REPO = "docker"
     def PROMOTE_REPO = "docker-prod-local"
     def SOURCE_REPO = "docker-stage-local"
     def rtServer = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
     def buildInfo = Artifactory.newBuildInfo()
     def tagName
-    def artdocker_registry = "webinar.jfrog.team"
+    def artdocker_registry = "p9demo-artifactory.jfrog.team"
     buildInfo.env.capture = true
 
     //Fetch all depensencies from Artifactory

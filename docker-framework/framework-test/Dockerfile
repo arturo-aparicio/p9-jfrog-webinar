@@ -1,4 +1,4 @@
-ARG REGISTRY=webinar.jfrog.team
+ARG REGISTRY=p9demo-artifactory.jfrog.team
 
 FROM ${REGISTRY}/docker-framework:latest
 

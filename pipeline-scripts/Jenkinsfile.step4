@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 
 node {
     def jobName = env.JOB_NAME
-    def server_url = "https://webinar.jfrog.team/artifactory"
+    def server_url = "https://p9demo-artifactory.jfrog.team/artifactory"
     def image_tag = getLatestDockerImage(server_url)
     def repo = "helm-virtual"
     stage('Clone repository') {
