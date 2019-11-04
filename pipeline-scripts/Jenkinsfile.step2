@@ -147,16 +147,18 @@ node (label: 'docker-enabled-agent') {
 
 def copyImage (source_repo, target_repo, server_url) {
     def BUILD_NUMBER = env.BUILD_NUMBER
-    def regTagStr = curlString +  "/api/docker/${source_repo}/v2/promote -X POST -H 'Content-Type: application/json' -d \
-        '{ \
-            \"targetRepo\" : \"${target_repo}\", \
-            \"dockerRepository\" : \"docker-framework\", \
-            \"tag\" : \"${BUILD_NUMBER}\", \
-            \"copy\": true \
-        }'"
-    println "Curl String is " + regTagStr
-    sh regTagStr
-
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+        def curlString = "curl -u " + env.USERNAME + ":" + env.PASSWORD + " " + server_url
+        def regTagStr = curlString +  "/api/docker/${source_repo}/v2/promote -X POST -H 'Content-Type: application/json' -d \
+            '{ \
+                \"targetRepo\" : \"${target_repo}\", \
+                \"dockerRepository\" : \"docker-framework\", \
+                \"tag\" : \"${BUILD_NUMBER}\", \
+                \"copy\": true \
+            }'"
+        println "Curl String is " + regTagStr
+        sh regTagStr
+    }
 }
 
 def updateDockerFile () {
