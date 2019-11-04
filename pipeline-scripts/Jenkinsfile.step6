@@ -2,7 +2,7 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
 
-node {
+node (label: 'docker-enabled-agent') {
 
     def SERVER_URL = "https://p9demo-artifactory.jfrog.team/artifactory"
     def artdocker_registry = "p9demo-artifactory.jfrog.team"
