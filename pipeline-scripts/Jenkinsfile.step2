@@ -138,7 +138,7 @@ node (label: 'docker-enabled-agent') {
             promoteBuild (SOURCE_REPO, PROMOTE_REPO, SERVER_URL)
             // rtServer.promote promotionConfig - occassionally will hang on dry run
 
-            copyImage(SOURCE_REPO, PROMOTE_REPO, SERVER_URL, )
+            copyImage(SOURCE_REPO, PROMOTE_REPO, SERVER_URL)
             reTagLatest (SOURCE_REPO, PROMOTE_REPO, SOURCE_REPO, SERVER_URL)
             reTagLatest (PROMOTE_REPO, PROMOTE_REPO, SOURCE_REPO, SERVER_URL)
          }

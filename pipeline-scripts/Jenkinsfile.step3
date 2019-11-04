@@ -128,6 +128,8 @@ node (label: 'docker-enabled-agent') {
             ]
             promoteBuild (SOURCE_REPO, PROMOTE_REPO, SERVER_URL)
             // rtServer.promote promotionConfig - occassionally will hang on dry run
+
+           copyImage(SOURCE_REPO, PROMOTE_REPO, SERVER_URL)
             reTagLatest (PROMOTE_REPO, SERVER_URL)
         }
 
@@ -157,6 +159,23 @@ def testApp (tag) {
         return result
     }
 }
+
+def copyImage (source_repo, target_repo, server_url) {
+    def BUILD_NUMBER = env.BUILD_NUMBER
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+        def curlString = "curl -u " + env.USERNAME + ":" + env.PASSWORD + " " + server_url
+        def regTagStr = curlString +  "/api/docker/${source_repo}/v2/promote -X POST -H 'Content-Type: application/json' -d \
+            '{ \
+                \"targetRepo\" : \"${target_repo}\", \
+                \"dockerRepository\" : \"docker-app\", \
+                \"tag\" : \"${BUILD_NUMBER}\", \
+                \"copy\": true \
+            }'"
+        println "Curl String is " + regTagStr
+        sh regTagStr
+    }
+}
+
 //Tag docker image
 def reTagLatest (promote_repo, server_url) {
     def BUILD_NUMBER = env.BUILD_NUMBER
