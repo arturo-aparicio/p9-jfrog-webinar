@@ -138,10 +138,25 @@ node (label: 'docker-enabled-agent') {
             promoteBuild (SOURCE_REPO, PROMOTE_REPO, SERVER_URL)
             // rtServer.promote promotionConfig - occassionally will hang on dry run
 
+            copyImage(SOURCE_REPO, PROMOTE_REPO, SERVER_URL, )
             reTagLatest (SOURCE_REPO, PROMOTE_REPO, SOURCE_REPO, SERVER_URL)
             reTagLatest (PROMOTE_REPO, PROMOTE_REPO, SOURCE_REPO, SERVER_URL)
          }
     }
+}
+
+def copyImage (source_repo, target_repo, server_url) {
+    def BUILD_NUMBER = env.BUILD_NUMBER
+    def regTagStr = curlString +  "/api/docker/${source_repo}/v2/promote -X POST -H 'Content-Type: application/json' -d \
+        '{ \
+            \"targetRepo\" : \"${target_repo}\", \
+            \"dockerRepository\" : \"docker-framework\", \
+            \"tag\" : \"${BUILD_NUMBER}\", \
+            \"copy\": true \
+        }'"
+    println "Curl String is " + regTagStr
+    sh regTagStr
+
 }
 
 def updateDockerFile () {
