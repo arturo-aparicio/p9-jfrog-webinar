@@ -9,18 +9,21 @@ node (label: 'docker-enabled-agent') {
     def latestVersionName
 
     stage('Configure helm & add Artifactory repo') {
-        /* Configure helm client to point to k8s cluster */
-         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-           sh "helm version"
-           sh "helm repo add helm ${SERVER_URL}/helm/ --username $USERNAME --password $PASSWORD"
-           sh "helm repo update"
-         }
+        withCredentials([file(credentialsId: 'K8CONFIG', variable: 'FILE')]) {
+            /* Configure helm client to point to k8s cluster */
+            sh 'KUBECONFIG=$FILE'
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: CREDENTIALS, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                sh 'helm init'
+                sh "helm version"
+                sh "helm repo add helm ${SERVER_URL}/helm/ --username $USERNAME --password $PASSWORD"
+                sh "helm repo update"
+            }
+        }
     }
 
     stage('Deploy chart pulling from Artifactory') {
         withCredentials([file(credentialsId: 'K8CONFIG', variable: 'FILE')]) {
             sh 'KUBECONFIG=$FILE'
-            sh 'helm init'
             /* Finally, we'll deploy the image to k8s using helm chart. this will pickup the lastest chart */
             sh "helm upgrade my-docker-app --install helm/docker-app-chart --namespace jfrog --set image.repository=${artdocker_registry}/docker-app"
         }
