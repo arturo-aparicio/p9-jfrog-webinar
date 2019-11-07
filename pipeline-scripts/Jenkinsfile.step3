@@ -57,7 +57,7 @@ node {
                       frameworkDockerImg = "${artdocker_registry}/docker-framework:latest"
                       docker.withRegistry ("https://${artdocker_registry}", CREDENTIALS) {
                             sh "docker login -u ${USERNAME} -p ${PASSWORD} https://${artdocker_registry}"
-                            docker.build(tagDockerApp)
+                            docker.build(tagDockerApp,  "--build-arg REGISTRY=${artdocker_registry} .")
                       }
                       buildInfo = rtDocker.push(tagDockerApp, REPO, buildInfo)
                       rtServer.publishBuildInfo buildInfo
