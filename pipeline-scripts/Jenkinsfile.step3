@@ -8,7 +8,7 @@ import groovy.json.JsonSlurper
 // NAMESPACEDOMAIN - domain name to use to create artifactory, xray, jfmc etc. url
 // XRAY_SCAN - choice (YES | NO).  scan docker image
 
-node (label: 'docker-enabled-agent') {
+node {
     //Clone example project from GitHub repository
     git url: 'https://github.com/jfrog-aparicio/p9-jfrog-webinar.git', branch: 'master'
     def jobName = env.JOB_NAME

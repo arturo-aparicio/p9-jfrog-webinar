@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 import groovy.json.JsonSlurper
 
-node (label: 'docker-enabled-agent') {
+node {
     def jobName = env.JOB_NAME
     def server_url = "https://p9demo-artifactory.jfrog.team/artifactory"
     def image_tag = getLatestDockerImage(server_url)

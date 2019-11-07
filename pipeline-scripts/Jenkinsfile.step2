@@ -2,7 +2,7 @@
 import groovy.json.JsonSlurper
 import hudson.FilePath
 
-node (label: 'docker-enabled-agent') {
+node {
     //Clone example project from GitHub repository
     git url: 'https://github.com/jfrog-aparicio/p9-jfrog-webinar.git', branch: 'master'
     def jobName = env.JOB_NAME
